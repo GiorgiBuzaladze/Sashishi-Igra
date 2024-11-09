@@ -6,16 +6,21 @@ public class GrabSystem : MonoBehaviour
     public Transform holdPoint;            // Point where grabbed objects are held
     public float grabRange = 3f;           // Max distance to grab objects
     public float holdSmoothness = 10f;     // Smoothness for moving objects to hold point
+    public float throwForce = 10f;         // Force applied to objects when thrown
     public LayerMask grabbableLayer;       // Layer for grabbable objects
     public Image grabIndicator;            // UI image for grab indicator
 
     private Rigidbody grabbedObject;
     private bool isGrabbing;
+    private float initialDrag;
+    private Collider playerCollider;       // Collider of the player to ignore collisions with grabbed objects
+    private float maxGrabDistance = 3f;    // Maximum distance the player can move away while still holding an object
 
     void Start()
     {
         // Ensure the grab indicator is hidden at the start
         grabIndicator.enabled = false;
+        playerCollider = GetComponent<Collider>();
     }
 
     void Update()
@@ -36,6 +41,12 @@ public class GrabSystem : MonoBehaviour
         if (isGrabbing && grabbedObject != null)
         {
             MoveObject();
+
+            // Release object if it's out of range
+            if (Vector3.Distance(holdPoint.position, grabbedObject.position) > maxGrabDistance)
+            {
+                ReleaseObject();
+            }
         }
     }
 
@@ -64,7 +75,13 @@ public class GrabSystem : MonoBehaviour
             {
                 grabbedObject = rb;
                 grabbedObject.useGravity = false;
+                initialDrag = grabbedObject.drag;
                 grabbedObject.drag = 10;
+                grabbedObject.collisionDetectionMode = CollisionDetectionMode.Continuous;
+
+                // Ignore collisions between the player and the grabbed object
+                Physics.IgnoreCollision(grabbedObject.GetComponent<Collider>(), playerCollider, true);
+
                 isGrabbing = true;
                 grabIndicator.enabled = false; // Hide indicator when grabbing
             }
@@ -76,7 +93,16 @@ public class GrabSystem : MonoBehaviour
         if (grabbedObject != null)
         {
             grabbedObject.useGravity = true;
-            grabbedObject.drag = 1;
+            grabbedObject.drag = initialDrag;
+            grabbedObject.collisionDetectionMode = CollisionDetectionMode.Discrete;
+
+            // Stop ignoring collisions between the player and the object
+            Physics.IgnoreCollision(grabbedObject.GetComponent<Collider>(), playerCollider, false);
+
+            // Apply throw force based on mouse movement
+            Vector3 throwVelocity = Camera.main.transform.forward * throwForce;
+            grabbedObject.velocity = throwVelocity;
+
             grabbedObject = null;
         }
         isGrabbing = false;
