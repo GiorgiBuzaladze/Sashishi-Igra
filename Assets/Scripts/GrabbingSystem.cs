@@ -79,8 +79,12 @@ public class GrabSystem : MonoBehaviour
                 grabbedObject.drag = 10;
                 grabbedObject.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-                // Ignore collisions between the player and the grabbed object
-                Physics.IgnoreCollision(grabbedObject.GetComponent<Collider>(), playerCollider, true);
+                // Check if the object is a door based on tag
+                if (!hit.collider.CompareTag("Door"))
+                {
+                    // Ignore collisions between the player and the grabbed object (only if not a door)
+                    Physics.IgnoreCollision(grabbedObject.GetComponent<Collider>(), playerCollider, true);
+                }
 
                 isGrabbing = true;
                 grabIndicator.enabled = false; // Hide indicator when grabbing
@@ -96,8 +100,11 @@ public class GrabSystem : MonoBehaviour
             grabbedObject.drag = initialDrag;
             grabbedObject.collisionDetectionMode = CollisionDetectionMode.Discrete;
 
-            // Stop ignoring collisions between the player and the object
-            Physics.IgnoreCollision(grabbedObject.GetComponent<Collider>(), playerCollider, false);
+            // Stop ignoring collisions between the player and the object (only if not a door)
+            if (!grabbedObject.CompareTag("Door"))
+            {
+                Physics.IgnoreCollision(grabbedObject.GetComponent<Collider>(), playerCollider, false);
+            }
 
             // Apply throw force based on mouse movement
             Vector3 throwVelocity = Camera.main.transform.forward * throwForce;
