@@ -1019,7 +1019,7 @@ MonoBehaviour:
   crouchSpeed: 1
   jumpHeight: 1
   gravity: -26.2
-  mouseSensitivity: 200
+  mouseSensitivity: 358.3
   maxStamina: 100
   staminaDrainRate: 20
   staminaRegenRate: 5
