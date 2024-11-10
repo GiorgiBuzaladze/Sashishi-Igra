@@ -43,6 +43,7 @@ public class FirstPersonController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         cameraTransform = Camera.main.transform;
         Cursor.lockState = CursorLockMode.Locked;
+        velocity = transform.position - cameraTransform.transform.position;
 
         stamina = maxStamina;
         staminaSlider.maxValue = maxStamina;
