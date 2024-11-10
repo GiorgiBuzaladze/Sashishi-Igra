@@ -335,6 +335,7 @@
 "Assets/Scripts/FirstPersonController.cs"
 "Assets/Scripts/FlashlightController.cs"
 "Assets/Scripts/GrabbingSystem.cs"
+"Assets/Scripts/Hingedoor.cs"
 "Assets/Scripts/WeaponSway.cs"
 -langversion:9.0
 /deterministic

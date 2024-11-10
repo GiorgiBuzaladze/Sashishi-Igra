@@ -362,3 +362,5 @@ MonoBehaviour:
   pickupRange: 1.5
   pickupIndicatorText: {fileID: 7039106117634346146}
   pickupIndicatorImage: {fileID: 0}
+  pickupSound: {fileID: 8300000, guid: 9543f45a8bad71e4fad6413a64180f8b, type: 3}
+  audioSource: {fileID: 0}

@@ -18,6 +18,8 @@ public class FirstPersonController : MonoBehaviour
     public float staminaDrainRate = 10f;
     public float staminaRegenRate = 5f;
     public Slider staminaSlider;
+    public AudioClip exhaustionSound; // Audio for exhaustion
+    public AudioSource audioSource; // AudioSource for exhaustion sound
 
     [Header("Crouch Settings")]
     public float crouchHeight = 1f;
@@ -34,6 +36,7 @@ public class FirstPersonController : MonoBehaviour
     private float xRotation = 0f;
     private float targetHeight;
     private Vector3 targetCenter;
+    private bool isExhausted = false; // To track exhaustion state
 
     void Start()
     {
@@ -47,6 +50,17 @@ public class FirstPersonController : MonoBehaviour
 
         targetHeight = standingHeight;
         targetCenter = characterController.center;
+
+        if (audioSource != null && exhaustionSound != null)
+        {
+            audioSource.clip = exhaustionSound;
+            audioSource.loop = true; // Loop the exhaustion sound
+            audioSource.volume = 0f; // Start with no sound
+        }
+        else
+        {
+            Debug.LogWarning("AudioSource or exhaustionSound is not assigned.");
+        }
     }
 
     void Update()
@@ -56,6 +70,7 @@ public class FirstPersonController : MonoBehaviour
         HandleSprintAndStamina();
         HandleCrouch();
         UpdateCameraPosition();
+        HandleExhaustionSound(); // Handle audio based on stamina
     }
 
     private void HandleMouseLook()
@@ -162,6 +177,35 @@ public class FirstPersonController : MonoBehaviour
         float checkDistance = (standingHeight - crouchHeight) / 2 + 0.5f;
         Vector3 origin = transform.position + Vector3.up * (crouchHeight / 2);
         return Physics.Raycast(origin, Vector3.up, checkDistance);
+    }
+
+    private void HandleExhaustionSound()
+    {
+        if (audioSource != null)
+        {
+            if (stamina <= 0)
+            {
+                audioSource.volume = 1f; // Play at full volume when stamina reaches 0
+                if (!audioSource.isPlaying)
+                {
+                    audioSource.Play(); // Start playing the exhaustion sound
+                }
+            }
+            else if (stamina <= maxStamina * 0.3f)
+            {
+                // Ease the volume in as stamina goes below 30%
+                audioSource.volume = Mathf.Lerp(audioSource.volume, 1f, Time.deltaTime);
+                if (!audioSource.isPlaying)
+                {
+                    audioSource.Play(); // Start playing the exhaustion sound if not already playing
+                }
+            }
+            else
+            {
+                // Fade out the sound when stamina is above 30%
+                audioSource.volume = Mathf.Lerp(audioSource.volume, 0f, Time.deltaTime);
+            }
+        }
     }
 
     private void UpdateCameraPosition()
