@@ -6,9 +6,9 @@ public class BatteryPickup : MonoBehaviour
     public float pickupRange = 3f; // Maximum range to pick up the battery
     public Text pickupIndicatorText; // Text for "Pick Up Battery" prompt
     public Image pickupIndicatorImage; // Image for the battery pickup prompt
-
     private Transform player;
     private FlashlightController flashlightController;
+    private bool isPickedUp = false; // Flag to track if the battery has been picked up
 
     void Start()
     {
@@ -18,42 +18,41 @@ public class BatteryPickup : MonoBehaviour
         ToggleImage(pickupIndicatorImage, false); // Start with image disabled
     }
 
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        DetectBatteryPickup();
+        if (!isPickedUp && other.CompareTag("Player"))
+        {
+            // Show prompt when player enters trigger
+            ToggleText(pickupIndicatorText, true);
+            ToggleImage(pickupIndicatorImage, true);
+        }
     }
 
-    private void DetectBatteryPickup()
+    private void OnTriggerExit(Collider other)
     {
-        Ray ray = new Ray(player.position, player.forward);
-        RaycastHit hit;
-
-        // Check if the player is looking directly at the battery within the pickup range
-        if (Physics.Raycast(ray, out hit, pickupRange))
+        if (other.CompareTag("Player"))
         {
-            if (hit.transform == transform)
-            {
-                // Player is looking directly at the battery and within range
-                ToggleText(pickupIndicatorText, true);
-                ToggleImage(pickupIndicatorImage, true); // Show the image
+            // Hide prompt when player exits trigger
+            ToggleText(pickupIndicatorText, false);
+            ToggleImage(pickupIndicatorImage, false);
+        }
+    }
 
-                // Check for pickup input
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    PickUpBattery();
-                }
-                return; // Exit early if the player is looking at the battery
+    void Update()
+    {
+        if (!isPickedUp && Vector3.Distance(player.position, transform.position) <= pickupRange)
+        {
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                PickUpBattery();
             }
         }
-
-        // Disable the text and image if the player is not looking at the battery
-        ToggleText(pickupIndicatorText, false);
-        ToggleImage(pickupIndicatorImage, false);
     }
 
     private void PickUpBattery()
     {
         flashlightController.AddBattery();
+        isPickedUp = true; // Set the flag to true when the battery is picked up
         ToggleText(pickupIndicatorText, false); // Optionally hide the text immediately
         ToggleImage(pickupIndicatorImage, false); // Hide the image immediately
         Destroy(gameObject); // Remove battery from scene after pickup

@@ -66,7 +66,7 @@ public class FirstPersonController : MonoBehaviour
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f); // Only vertical rotation
         transform.Rotate(Vector3.up * mouseX);
     }
 
@@ -84,7 +84,6 @@ public class FirstPersonController : MonoBehaviour
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
 
         float currentSpeed = isCrouching ? crouchSpeed : (isSprinting ? sprintSpeed : walkSpeed);
-
         characterController.Move(move * currentSpeed * Time.deltaTime);
 
         if (Input.GetButtonDown("Jump") && isGrounded && !isCrouching)
@@ -148,11 +147,9 @@ public class FirstPersonController : MonoBehaviour
             }
         }
 
-        // Smoothly adjust the height and center of the character controller
         characterController.height = Mathf.Lerp(characterController.height, targetHeight, Time.deltaTime * crouchTransitionSpeed);
         characterController.center = Vector3.Lerp(characterController.center, targetCenter, Time.deltaTime * crouchTransitionSpeed);
 
-        // Force update collider after reaching the target height/center
         if (Mathf.Abs(characterController.height - targetHeight) < 0.01f)
         {
             characterController.height = targetHeight;
@@ -162,18 +159,17 @@ public class FirstPersonController : MonoBehaviour
 
     private bool IsObstacleAbove()
     {
-        float checkDistance = (standingHeight - crouchHeight) / 2 + 0.5f; // Small buffer to detect close obstacles
+        float checkDistance = (standingHeight - crouchHeight) / 2 + 0.5f;
         Vector3 origin = transform.position + Vector3.up * (crouchHeight / 2);
-
         return Physics.Raycast(origin, Vector3.up, checkDistance);
     }
 
     private void UpdateCameraPosition()
     {
-        float targetCameraYPos = characterController.center.y + characterController.height / 2;
+        // Only interpolate the Y position for smooth crouch transition
+        Vector3 targetCameraPos = new Vector3(cameraTransform.position.x, characterController.transform.position.y + characterController.center.y + characterController.height / 3, cameraTransform.position.z);
 
-        Vector3 cameraPosition = cameraTransform.localPosition;
-        cameraPosition.y = Mathf.Lerp(cameraPosition.y, targetCameraYPos, Time.deltaTime * crouchTransitionSpeed);
-        cameraTransform.localPosition = cameraPosition;
+        // Smooth the Y-axis position for crouching and leave X and Z axis unchanged
+        cameraTransform.position = Vector3.Lerp(cameraTransform.position, targetCameraPos, Time.deltaTime * crouchTransitionSpeed);
     }
 }
