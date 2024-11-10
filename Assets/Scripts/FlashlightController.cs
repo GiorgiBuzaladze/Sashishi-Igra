@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro; // Import TextMeshPro
 
 public class FlashlightController : MonoBehaviour
 {
@@ -15,9 +16,9 @@ public class FlashlightController : MonoBehaviour
     public int batteriesCarried = 0;
 
     public Slider batteryIndicatorSlider; // Slider for battery life
-    public Text batteryCountText; // Text to show number of batteries
-    public Text reloadBatteryText; // Text for "Reload Battery" prompt
-    public Text findBatteriesText; // Text for "Find Batteries" prompt
+    public TextMeshProUGUI batteryCountText; // TextMeshProUGUI for number of batteries
+    public TextMeshProUGUI reloadBatteryText; // TextMeshProUGUI for "Reload Battery" prompt
+    public TextMeshProUGUI findBatteriesText; // TextMeshProUGUI for "Find Batteries" prompt
 
     private bool isOn = false;
     private float originalIntensity; // Store the original intensity of the flashlight
@@ -149,7 +150,7 @@ public class FlashlightController : MonoBehaviour
         }
     }
 
-    private void ToggleText(Text textObject, bool state)
+    private void ToggleText(TextMeshProUGUI textObject, bool state)
     {
         if (textObject != null)
         {

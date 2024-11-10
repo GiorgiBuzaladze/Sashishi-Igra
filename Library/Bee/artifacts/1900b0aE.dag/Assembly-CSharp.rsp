@@ -343,6 +343,10 @@
 "Assets/Scripts/Hingedoor.cs"
 "Assets/Scripts/MainMenuManager.cs"
 "Assets/Scripts/WeaponSway.cs"
+"Assets/Tensori/SkinlessZombie/Demo Scripts/AnimationController.cs"
+"Assets/Tensori/SkinlessZombie/Demo Scripts/AnimationItemData.cs"
+"Assets/Tensori/SkinlessZombie/Demo Scripts/CameraController.cs"
+"Assets/Tensori/SkinlessZombie/Demo Scripts/UIElementController.cs"
 -langversion:9.0
 /deterministic
 /optimize+
