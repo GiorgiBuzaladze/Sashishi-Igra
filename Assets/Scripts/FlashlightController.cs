@@ -7,6 +7,7 @@ public class FlashlightController : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip turnOnSound;
     public AudioClip turnOffSound;
+    public AudioClip reloadSound; // New reload sound effect
 
     public float maxBatteryLife = 100f;
     private float currentBatteryLife;
@@ -115,6 +116,7 @@ public class FlashlightController : MonoBehaviour
             currentBatteryLife = maxBatteryLife;
             ToggleText(reloadBatteryText, false);
             UpdateBatteryUI();
+            audioSource.PlayOneShot(reloadSound); // Play reload sound effect
         }
         else if (batteriesCarried == 0 && currentBatteryLife == 0)
         {

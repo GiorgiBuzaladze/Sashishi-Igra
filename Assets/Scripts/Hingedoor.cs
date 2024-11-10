@@ -4,11 +4,13 @@ public class HingeDoor : MonoBehaviour
 {
     [Header("Audio Settings")]
     public AudioSource customAudioSource; // Optional: Drag your own AudioSource here
-    public AudioClip closeSound;         // Sound for closing
+    public AudioClip closeSound;          // Sound for closing
+    public AudioClip openSound;           // Sound for opening
 
-    private AudioSource audioSource;     // Reference to the audio source used for sounds
-    private HingeJoint hingeJoint;       // The hinge joint for the door
-    private bool hasPlayedCloseSound = false; // Flag to track if close sound has been played
+    private AudioSource audioSource;      // Reference to the audio source used for sounds
+    private HingeJoint hingeJoint;        // The hinge joint for the door
+    private bool hasPlayedCloseSound = true; // Start as true to prevent initial play
+    private bool hasPlayedOpenSound = false; // Flag to track if open sound has been played
 
     void Start()
     {
@@ -34,11 +36,18 @@ public class HingeDoor : MonoBehaviour
             {
                 audioSource.PlayOneShot(closeSound); // Play the close sound once
                 hasPlayedCloseSound = true; // Set the flag to prevent repeated sounds
+                hasPlayedOpenSound = false; // Reset open sound flag when door is closed
             }
         }
-        else if (currentAngle > 2)
+        // Check if the door is opened (angle greater than a small threshold)
+        else if (currentAngle > 2 && !hasPlayedOpenSound)
         {
-            hasPlayedCloseSound = false; // Reset flag if the door is opened again
+            if (openSound != null)
+            {
+                audioSource.PlayOneShot(openSound); // Play the open sound once
+                hasPlayedOpenSound = true; // Set the flag to prevent repeated sounds
+                hasPlayedCloseSound = false; // Reset close sound flag when door is opened
+            }
         }
     }
 }

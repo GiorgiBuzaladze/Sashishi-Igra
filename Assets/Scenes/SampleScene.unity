@@ -1577,6 +1577,7 @@ MonoBehaviour:
   audioSource: {fileID: 963194229}
   turnOnSound: {fileID: 8300000, guid: ab2ee2e1da057fe46982758d222e6749, type: 3}
   turnOffSound: {fileID: 8300000, guid: ab2ee2e1da057fe46982758d222e6749, type: 3}
+  reloadSound: {fileID: 8300000, guid: e6207dc98083cee45b1945357d244a13, type: 3}
   maxBatteryLife: 100
   batteryDrainRate: 5
   batteriesCarried: 0
@@ -2799,6 +2800,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   customAudioSource: {fileID: 1376747384}
   closeSound: {fileID: 8300000, guid: 5cfdd6328d7ae884496b1e880aacf659, type: 3}
+  openSound: {fileID: 8300000, guid: 9b139bc5a5ddfce4791c168b5f9dbd4f, type: 3}
 --- !u!1 &1378218389
 GameObject:
   m_ObjectHideFlags: 0
